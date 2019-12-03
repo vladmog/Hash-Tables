@@ -11,7 +11,7 @@ class HashTable:
     '''
     A hash table that with `capacity` buckets
     that accepts string keys
-    '''
+    ''' 
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
@@ -26,13 +26,13 @@ class HashTable:
         return hash(key)
 
 
-    def _hash_djb2(self, key):
-        '''
-        Hash an arbitrary key using DJB2 hash
+    # def _hash_djb2(self, key):
+    #     '''
+    #     Hash an arbitrary key using DJB2 hash
 
-        OPTIONAL STRETCH: Research and implement DJB2
-        '''
-        pass
+    #     OPTIONAL STRETCH: Research and implement DJB2
+    #     '''
+    #     pass
 
 
     def _hash_mod(self, key):
@@ -51,7 +51,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        if self.storage[self._hash_mod(key)] != None:
+            print(f"\nFAILED to insert value '{value}' into key {self._hash_mod(key)}, occupied by {self.storage[self._hash_mod(key)]}\n")
+        else:
+            print(f"\nSUCCEEDED to insert value '{value}' into key {self._hash_mod(key)}, occupied by {self.storage[self._hash_mod(key)]}\n")
+            self.storage[self._hash_mod(key)] = value
+        
+    # How is his giving me different test results every time?
 
 
 
