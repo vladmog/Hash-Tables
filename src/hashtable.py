@@ -158,14 +158,13 @@ class HashTable:
     #     pass
 
     # the _underscore before the method implies the function shouldn't be used outside of the class
+
+
     def _hash_mod(self, key):
         '''
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
-        print(f"Key: {key}")
-        print(f"Hash: {self._hash(key)}")
-        print(f"HashMod: {self._hash(key) % self.capacity}")
 
         return self._hash(key) % self.capacity
 
@@ -180,23 +179,21 @@ class HashTable:
         '''
         index = self._hash_mod(key)
 
+        if self.retrieve(key) is not None:
+            self.remove(key)
+
         if self.storage[index] != None:
-            print(f"\nFAILED to insert value '{value}' into index {index}, occupied by {self.storage[index].value}\n")
+            stack = []
             current = self.storage[index]
+            stack.append(current.value)
             next = self.storage[index].next
-            print(f"Original current.next: {next}")
             while next is not None:
-                print(f"Before current {current.value}")
-                print(f"Before next {next.value}")
                 current = next
                 next = next.next
-                print(f"Then current {current.value}")
-                print(f"Then next {next}\n\n")
+                stack.append(current.value)
             current.next = LinkedPair(key, value)
-            print(f"Final current.next: {current.next}")
 
         else:
-            print(f"\nSUCCEEDED to insert value '{value}' into index {index}, occupied by {self.storage[index]}\n")
             self.storage[index] = LinkedPair(key, value)
 
 
@@ -211,7 +208,25 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        if self.storage[index] is None:
+            print("ERROR Element with given key not found")
+
+        elif self.storage[index].key == key:
+            self.storage[index] = None
+
+        else:
+            current = self.storage[index]
+            prev = None
+            while current.key != key:
+                prev = current
+                current = current.next
+            if current.key == key:
+                prev.next = current.next
+                current = None
+            elif current is None:
+                print("Element not found")
 
 
     def retrieve(self, key):
@@ -222,17 +237,66 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+
+        index = self._hash_mod(key)
+        
+        if self.storage[index] is None:
+            return None
+        elif self.storage[index].key == key:
+            return self.storage[index].value
+        elif self.storage[index].next is None:
+            return None
+        elif self.storage[index].next != None:
+            current = self.storage[index]
+            while current.key != key and current.next != None:
+                current = current.next
+            if current.key == key:
+                return current.value
+            else:
+                return None
 
 
     def resize(self):
+        print(f"RESIZE INIT")
         '''
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
+
+        for bucket in self.storage:
+            print(f"\nbucket {bucket}")
+            if bucket:
+                print(f"Val {bucket.value}")
+            if bucket is None:
+                # Empty bucket
+                print(f"Empty bucket")
+                continue
+            elif bucket.next is None:
+                # Occupied bucket with no next
+                print(f"Occupied bucket with no next")
+                new_index = self._hash_mod(bucket.key)
+                new_storage[new_index] = LinkedPair(bucket.key, bucket.value)
+            elif bucket.next is not None:
+                # Occupied bucket with a next
+                print(f"Occupied bucket with a next")
+                current = bucket
+                while current.next is not None:
+                    print(f"Iterate {current.value}")
+                    new_index = self._hash_mod(current.key)
+                    new_storage[new_index] = LinkedPair(current.key, current.value)
+                    current = current.next
+
+        self.storage = new_storage
+
+
+
+
+
+
 
 
 
